@@ -1,8 +1,6 @@
-Flask==2.3.2
+crewai_tools
+Flask==3.0.2
 gunicorn==21.2.0
-crewai==1.6.1
-crewai-tools==1.4.8
-openai==1.50.2
-python-dotenv
-requests
-beautifulsoup4
+crewai==1.6.0
+python-dotenv>=1.1.1
+openai==1.55.3
