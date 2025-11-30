@@ -1,54 +1,43 @@
 from dotenv import load_dotenv
 load_dotenv()
-
-from crewai import Crew
-from dotenv import load_dotenv
-import os
-
 from tasks.research_task import research_task
 from tasks.study_plan_task import study_plan_task
+import agents
+import tasks
 
-load_dotenv()  # Load API key
+from crewai import Agent, Task, Crew
+from crewai import LLM
+
+# Use light model
+llm = LLM(model="gpt-4o-mini")
 
 def generate_study_plan(topic, hours):
-    # Update tasks dynamically
-    research_task.description = (
-        f"Research the best resources for learning {topic}. "
-        f"Consider that the user can study {hours} hours per day."
+    agent = Agent(
+        role="Study Planner",
+        goal="Generate a short, structured 30-day study plan.",
+        backstory="You specialize in creating simple and concise study roadmaps.",
+        llm=llm,
+        verbose=False
     )
 
-    study_plan_task.description = (
-        f"Using the research findings, create a structured 30-day study plan "
-        f"for the topic: {topic}, with daily {hours} hours of study."
+    task = Task(
+        description=(
+            f"Create a simple, clear 30-day study plan for learning {topic}. "
+            f"The user studies {hours} hours per day. "
+            f"Keep it concise. No long paragraphs. No research section."
+        ),
+        agent=agent,
+        expected_output="Short 30-day learning plan in bullet points."
     )
 
     crew = Crew(
-        agents=[
-            research_task.agent,
-            study_plan_task.agent
-        ],
-        tasks=[research_task, study_plan_task],
-        verbose=True
+        agents=[agent],
+        tasks=[task],
+        verbose=False
     )
 
-    return crew.kickoff()
-
-
-
-# ------------- ADD THIS FOR FLASK ------------------
+    result = crew.kickoff()
+    return result
 
 def run_pipeline(topic, hours):
-    """Function Flask will call."""
     return generate_study_plan(topic, hours)
-
-# ---------------------------------------------------
-
-
-if __name__ == "__main__":
-    print("\n==== STUDY PLAN GENERATOR ====")
-    topic = input("Enter topic to study (e.g., Python, SQL, ML): ")
-    hours = input("How many hours can you study per day? ")
-
-    final_plan = generate_study_plan(topic, hours)
-    print("\n=========== FINAL 30-DAY STUDY PLAN ===========\n")
-    print(final_plan)
