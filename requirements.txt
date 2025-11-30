@@ -1,15 +1,8 @@
-<<<<<<< HEAD
-crewai_tools
-Flask==3.0.2
-gunicorn==21.2.0
-crewai==1.6.0
-python-dotenv>=1.1.1
-openai==1.55.3
-=======
-crewai==1.6.1
-crewai-tools==0.12.0
 Flask==2.3.2
 gunicorn==21.2.0
+crewai==1.6.1
+crewai-tools==1.4.8
+openai==1.50.2
 python-dotenv
 requests
->>>>>>> 1a05b469d9880f35b83bcb68622c0d849d2fc8e1
+beautifulsoup4
